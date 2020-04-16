@@ -14,4 +14,4 @@ You need [NodeJS](https://nodejs.org/) installed on your computer
 
 
 ## Preview
-![Alt text](/gomoku_preview.png?raw=true)
+![Alt text](/3_player_gomoku_preview.png?raw=true)
