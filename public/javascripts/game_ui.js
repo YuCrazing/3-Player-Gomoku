@@ -1,7 +1,7 @@
 var socket = io.connect();
 var activePlayerID;
 var players = [];
-var inputSide = ["#sideX", "#sideO"];
+var inputSide = ["#sideX", "#sideO", "#sideE"];
 var gameOver = false;
 
 
@@ -42,13 +42,24 @@ var gameOver = false;
 
 			if(playerId === players[0]) {
 				shape.moveTo((x-1)*gridStep + 5, (y-1)*gridStep + 5);
-				shape.lineTo(x*gridStep -5, y*gridStep - 5);
+				shape.lineTo(x*gridStep - 5, y*gridStep - 5);
 				shape.moveTo(x*gridStep - 5, (y-1)*gridStep + 5);
 				shape.lineTo((x-1)*gridStep + 5, y*gridStep - 5);
+				// shape.arc(x*gridStep - gridStep/2, y*gridStep - gridStep/2, gridStep/2 - 5, 0, 2 * Math.PI);
 				shape.strokeStyle = "green";					
 			} else if(playerId === players[1]) {
 				shape.arc(x*gridStep - gridStep/2, y*gridStep - gridStep/2, gridStep/2 - 5, 0, 2 * Math.PI);
 				shape.strokeStyle = "blue";
+			} else if(playerId === players[2]) {
+				shape.moveTo((x-1)*gridStep + 5, (y-1)*gridStep + 5);
+				shape.lineTo(x*gridStep - 5, (y-1)*gridStep + 5);
+				shape.lineTo(x*gridStep - 5, y*gridStep - 5);
+				shape.lineTo((x-1)*gridStep + 5, y*gridStep - 5);
+				shape.lineTo((x-1)*gridStep + 5, (y-1)*gridStep + 5);
+				// shape.moveTo(x*gridStep - 5, (y-1)*gridStep + 5);
+				// shape.lineTo(x*gridStep - 5, y*gridStep - 5);
+				// shape.arc(x*gridStep - gridStep/2, y*gridStep - gridStep/2, gridStep/2 - 5, 0, 2 * Math.PI);
+				shape.strokeStyle = "red";
 			}
 
 			if(i === grid.length - 1) {
@@ -87,11 +98,15 @@ var gameOver = false;
 		$('<h3>Choose a side:</h3>').appendTo("#gameContainer");
 
 		if(!players[0]) {
-			$('<div id="sideX"><input type="radio" name="side" ><strong>X</strong></div>').appendTo("#gameContainer");
+			$('<div id="sideX"><input type="radio" name="side" ><strong>First</strong></div>').appendTo("#gameContainer");
 		}
 
 		if(!players[1]) {
-			$('<div id="sideO"><input type="radio"name="side" ><strong>O</strong></div>').appendTo("#gameContainer");
+			$('<div id="sideO"><input type="radio"name="side" ><strong>Second</strong></div>').appendTo("#gameContainer");
+		}
+
+		if(!players[2]) {
+			$('<div id="sideE"><input type="radio"name="side" ><strong>Third</strong></div>').appendTo("#gameContainer");
 		}
 
 		$('<p id="sideInfo"></p>').appendTo("#gameContainer");
@@ -139,6 +154,10 @@ var gameOver = false;
 		$("#sideO").click(function() {
 			socket.emit('verifySide', {id: socket.userID, side: 1});
 		});
+
+		$("#sideE").click(function() {
+			socket.emit('verifySide', {id: socket.userID, side: 2});
+		});
 	});
 
 	socket.on('moveDone', function(answer) {
@@ -170,13 +189,16 @@ var gameOver = false;
 			var id = answer.id;
 			var side = answer.side;
 			players[side] = id;
-			var message = "You are " + (side === 0 ? "X" : "O");
+			// var message = "You are " + (side === 0 ? "X" : (side === 1 ? "O" : "E") );
+			var message = "You are the " + (side === 0 ? "first" : (side === 1 ? "second" : "third") ) + " player.";
 			$("#sideInfo").text(message);
 			$(inputSide[0]).remove();
 			$(inputSide[1]).remove();
+			$(inputSide[2]).remove();
 		}
 		else {
-			var message = "Sorry, side " + (answer.side === 0 ? "X" : "O") + " has already choosen";
+			// var message = "Sorry, side " +  (answer.side === 0 ? "X" : (side === 1 ? "O" : "E") ) + " has already choosen";
+			var message = "Sorry, " +  (answer.side === 0 ? "first" : (side === 1 ? "second" : "third") ) + "player has already choosen.";
 			$("#sideInfo").text(message);
 		}
 	});

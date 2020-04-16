@@ -1,4 +1,4 @@
-# 3 Player Gomoku game （三人五子棋）
+# Gomoku game
 ## About
 Multi-player game similar to “tic-tac-toe”, but on 19x19 cells field. The player who succeeds in placing five of their marks in a horizontal, vertical, or diagonal row wins the game.
 
